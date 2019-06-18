@@ -1,21 +1,24 @@
 import React, { useState } from 'react'
 import ReactDOM from 'react-dom'
 
-const Button = ({text, handler}) => { 
+const Header = ({title}) => {
+  return (
+    <h2>{title}</h2>
+  )
+}
+
+const Button = ({text, handler}) => {
   return (
     <button onClick={handler()}> {text} </button>
   )
 }
 
-const VoteDisplay = (props) => { 
+const AnecdoteDisplay = ({anecdotes, votes, index}) => {
   return (
-    <p> has {props.voteCount} votes </p>
-  )
-}
-
-const AnecdoteDisplay = (props) => { 
-  return (
-    <p> {props.anecdote} </p>
+    <>
+    <div> {anecdotes[index]} </div>
+    <div> has {votes[index]} votes </div>
+    </>
   )
 }
 
@@ -30,20 +33,28 @@ const App = ({anecdotes, startVotes}) => {
     }
   }
 
-  const voteForSelected = () => {  
-    return() => {
-      let copy = [...votes]
-      copy[selected] += 1
-      setVotes(copy)
+  const voteForSelected = () => {
+    let copy = [...votes]
+    copy[selected] += 1
+    return() => setVotes(copy)
+  }
+
+  const getMostVoteIndex = () => {
+    let mostIndex = 0
+    for (var i = 0; i < 6; i++) {
+      if (votes[i] > votes[mostIndex]) { mostIndex=i }
     }
+    return (mostIndex)
   }
 
   return (
     <div>
-      <AnecdoteDisplay anecdote={anecdotes[selected]} />
-      <VoteDisplay voteCount={votes[selected]} />
+      <Header title='Anecdote of the day' />
+      <AnecdoteDisplay anecdotes={anecdotes} votes={votes} index={selected} />
       <Button text='vote' handler={voteForSelected} /> 
       <Button text='next anecdote' handler={selectRandom} /> 
+      <Header title='Anecdote with most vote' />
+      <AnecdoteDisplay anecdotes={anecdotes} votes={votes} index={getMostVoteIndex()} />
     </div>
   )
 }
@@ -56,7 +67,6 @@ const anecdotes = [
   'Premature optimization is the root of all evil.',
   'Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.'
 ]
-
 const startVotes = Array(6).fill(0)
 
 ReactDOM.render(
