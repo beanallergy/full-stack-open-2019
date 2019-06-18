@@ -1,67 +1,43 @@
-import ReactDOM from 'react-dom'
 import React, { useState } from 'react'
+import ReactDOM from 'react-dom'
 
-const Header = (props) => {
+const Button = ({text, handler}) => { 
   return (
-    <h2>{props.title}</h2>
-  )
-}
-
-const Button = (props) => {
-  return (
-    <button onClick={() => { props.setCounter(props.counter + 1) }}> {props.name} </button>
-  )
-}
-
-const Statistic = (props) => {
-  return (
-    <tr><td>{props.text} </td><td>{props.counter}</td></tr>
-  )
-}
-
-const Statistics = ({goodVal, neutralVal, badVal}) => {
-  let sum = goodVal + neutralVal + badVal
-  let avg = (goodVal*1 + neutralVal*0 + badVal*-1)/sum
-  let positive = (goodVal/sum)*100 + '%'
-
-  if (sum === 0) {
-    return (
-      <div>
-        <p>No feedback given</p>
-      </div>
-    )
-  }
-
-  return(
     <div>
-      <table><tbody>
-      <Statistic text="good" counter={goodVal} />
-      <Statistic text="neutral" counter={neutralVal} />
-      <Statistic text="bad" counter={badVal} />
-      <Statistic text="all" counter={sum} />
-      <Statistic text="average" counter={avg} />
-      <Statistic text="positive" counter={positive}/>
-      </tbody></table>
+      <button onClick={handler()}> {text} </button>
     </div>
   )
 }
 
 const App = (props) => {
+  const [selected, setSelected] = useState(0)
+  const minAnecdotesIndex = 0
+  const maxAnecdotesIndex = 5
 
-  const [good, setGood] = useState(0)
-  const [neutral, setNeutral] = useState(0)
-  const [bad, setBad] = useState(0)
+  const selectRandom = () => {
+    let value = Math.floor(Math.random() * (maxAnecdotesIndex - minAnecdotesIndex)) + minAnecdotesIndex;
+    console.log(value)
+    return() => setSelected(value)  
+  }
 
   return (
     <div>
-      <Header title="give feedback" />
-      <Button setCounter={setGood} counter={good} name='good' />
-      <Button setCounter={setNeutral} counter={neutral} name='neutral' />
-      <Button setCounter={setBad} counter={bad} name='bad' />
-      <Header title="statistics" />
-      <Statistics goodVal={good} neutralVal={neutral} badVal={bad} />
+      {props.anecdotes[selected]}
+      <Button text='next anecdote' handler={selectRandom}/> 
     </div>
   )
 }
 
-ReactDOM.render(<App />, document.getElementById('root'))
+const anecdotes = [
+  'If it hurts, do it more often',
+  'Adding manpower to a late software project makes it later!',
+  'The first 90 percent of the code accounts for the first 90 percent of the development time...The remaining 10 percent of the code accounts for the other 90 percent of the development time.',
+  'Any fool can write code that a computer can understand. Good programmers write code that humans can understand.',
+  'Premature optimization is the root of all evil.',
+  'Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.'
+]
+
+ReactDOM.render(
+  <App anecdotes={anecdotes} />,
+  document.getElementById('root')
+)
