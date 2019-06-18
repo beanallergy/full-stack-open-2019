@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom'
 const Button = ({text, handler}) => { 
   return (
     <div>
-      <button onClick={handler()}> {text} </button>
+      <button onClick={handler}> {text} </button>
     </div>
   )
 }
@@ -12,12 +12,15 @@ const Button = ({text, handler}) => {
 const App = (props) => {
   const [selected, setSelected] = useState(0)
   const minAnecdotesIndex = 0
-  const maxAnecdotesIndex = 5
+  const maxAnecdotesIndex = 6
 
   const selectRandom = () => {
-    let value = Math.floor(Math.random() * (maxAnecdotesIndex - minAnecdotesIndex)) + minAnecdotesIndex;
+    let value = Math.floor(Math.random() * 6)
     console.log(value)
-    return() => setSelected(value)  
+    return() => {
+      setSelected(value)  
+      console.log('selected = ' + this.selected)
+    }
   }
 
   return (
