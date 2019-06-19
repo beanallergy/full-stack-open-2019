@@ -20,18 +20,20 @@ const Part = ({part}) => {
   )
 } 
 
-const Total = ({parts}) => {   
+const Total = ({exercises}) => {
+  const reducer = (accumulator, currentValue) => accumulator + currentValue
   return (
-    <p>Number of exercises {parts[0].exercises + parts[1].exercises + parts[2].exercises}</p>
+    <p>Number of exercises {exercises.reduce(reducer)}</p>
   )
 }
 
 const Course = ({course}) => {
+  let exercises = course.parts.map((part) => part.exercises)
   return (
     <div>
       <Header name={course.name} />
       <Content parts={course.parts} />
-      <Total parts={course.parts} />
+      <Total exercises={exercises} />
     </div>
   )
 }
