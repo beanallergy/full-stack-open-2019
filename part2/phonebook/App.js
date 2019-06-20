@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import People from './components/People'
+import NewPersonForm from './components/NewPersonForm'
 
 const Header = ({name}) => {
   return (
@@ -12,26 +13,22 @@ const App = (props) => {
     { name: 'Arto Hellas' }
   ]) 
   const [ newName, setNewName ] = useState('')
+  const [ newNumber, setNewNumber ] = useState('')
 
-  const handleNameChange = (event) => {
-    setNewName(event.target.value)
-  }
-
-  const addNewName = (event) => {
+  const addNewPerson = (event) => {
     event.preventDefault()
     let names = persons.map(person => person['name'])
     names.includes(newName)
       ? alert(`${newName} is already added to phonebook`)
-      : setPersons(persons.concat({ 'name': newName })) 
+      : setPersons(persons.concat({ 'name': newName , 'number': newNumber}))
   }
   
   return (
     <div>
       <Header name='Phonebook' />
-      <form onSubmit={addNewName}>
-        <div>
-          name: <input value={newName} onChange={handleNameChange}/>
-        </div>
+      <form onSubmit={addNewPerson}>
+        <NewPersonForm label='name' newValue={newName} setNewValue={setNewName} />
+        <NewPersonForm label='number' newValue={newNumber} setNewValue={setNewNumber} />
         <div>
           <button type="submit">add</button>
         </div>
