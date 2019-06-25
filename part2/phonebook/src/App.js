@@ -1,7 +1,8 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import People from './components/People'
 import NewPersonForm from './components/NewPersonForm'
 import NewInput from './components/NewInput'
+import axios from 'axios';
 
 const Header = ({name}) => {
   return (
@@ -10,21 +11,23 @@ const Header = ({name}) => {
 }
 
 const App = (props) => {
-  const [ persons, setPersons] = useState([
-    { name: 'Arto Hellaspop', number: '040-123456' },
-    { name: 'Ada Loveart', number: '39-44-5323523' },
-    { name: 'Dan Adamov', number: '12-43-234345' },
-    { name: 'Mary Poppendieck', number: '39-23-6423122' }
-  ])
+  const [ persons, setPersons] = useState([])
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber ] = useState('')
   const [ filter, setFilter ] = useState('')
 
+  console.log(persons)
+  useEffect (() => {
+    axios
+      .get('http://localhost:3001/persons')
+      .then(response => {setPersons(response.data)})
+  }, [])
+  
   const filterPeople = () => {
     return ( 
       persons.filter(person => 
         person['name'].toString().toLowerCase()
-        .includes(filter.toString().toLowerCase())
+        .includes(filter.toString( ).toLowerCase())
       )
     )
   }
@@ -39,6 +42,7 @@ const App = (props) => {
 
       <Header name='Numbers' />
       <People people={filterPeople()} />
+      {/* <People people={persons} /> */}
     </div>
   )
 }
