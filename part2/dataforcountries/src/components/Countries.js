@@ -3,7 +3,7 @@ import Country from './Country'
 
 const Countries = ({countries}) => {
   if (countries.length === 1) {
-    return ( 
+    return (
     <Country key={countries[0]['name']} country={countries[0]} />
     )
   }
