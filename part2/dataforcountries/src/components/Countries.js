@@ -2,11 +2,28 @@ import React from 'react'
 import Country from './Country'
 
 const Countries = ({countries}) => {
-  return ((countries.length <= 10) 
-  ? <>
-    {countries.map((country) => <Country key={country['name']} country={country} /> )}
-  </> 
-  : <p> Too many matches, specify another filter </p>
+  if (countries.length === 1) {
+    return ( 
+    <Country key={countries[0]['name']} country={countries[0]} />
+    )
+  }
+  else if (countries.length > 10) {
+    return (
+    <p> Too many matches, specify another filter </p>
+    )
+  }
+  else if (1 < countries.length < 10) {
+    return (
+    <>
+    {countries.map((country) => <CountryInList key={country['name']} country={country} /> )}
+    </>
+    )
+  }
+}
+
+const CountryInList = ({country}) => {
+  return (
+    <p>{country['name']}</p>
   )
 }
 

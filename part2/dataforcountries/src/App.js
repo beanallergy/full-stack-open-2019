@@ -3,12 +3,6 @@ import NewInput from './components/NewInput'
 import Countries from './components/Countries'
 import axios from 'axios';
 
-const Header = ({name}) => {
-  return (
-    <h2>{name}</h2>
-  )
-}
-
 const App = (props) => {
   const [ countries, setCountries] = useState([])
   const [ filter, setFilter ] = useState('')
@@ -25,7 +19,6 @@ const App = (props) => {
         country['name'].toString().toLowerCase()
         .includes(filter.toString().toLowerCase())
     )
-    console.log(filtered)
     return filtered
   }
   
