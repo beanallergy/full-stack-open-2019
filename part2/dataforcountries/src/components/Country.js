@@ -8,7 +8,7 @@ const Country = ({country}) => {
     <p> population {country['population']}</p>
     <h2> languages </h2>
     <Languages languages={country['languages']} />
-    <img src={country['flag']}/>
+    <img src={country['flag']} alt="Flag of country" />
     </div>
   )
 }
