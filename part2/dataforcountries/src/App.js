@@ -25,7 +25,7 @@ const App = (props) => {
   return (
     <div>
       <NewInput label='find countries' value={filter} setNewValue={setFilter}/>
-      <Countries countries={filterCountries()}/>
+      <Countries countries={filterCountries()} setFilter={setFilter}/>
     </div>
   )
 }
