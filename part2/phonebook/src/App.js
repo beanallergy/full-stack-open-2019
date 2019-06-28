@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import People from './components/People'
+import PhonebookItem from './components/PhonebookItem'
 import NewPersonForm from './components/NewPersonForm'
 import NewInput from './components/NewInput'
 import personService from './services/persons'
@@ -23,7 +23,7 @@ const App = (props) => {
         setPersons(initialPersons)
       })
   }, [])
-   
+
   const filterPeople = () => {
     return ( 
       persons.filter(person =>
@@ -33,17 +33,26 @@ const App = (props) => {
     )
   }
 
-  
+  const deletePersonHandler = (person) => {
+    let confirmed = window.confirm(`Delete ${person['name']}?`)
+    if (confirmed) {
+      const indexToRemove = person['id']
+      personService.remove(indexToRemove)
+      let updated = persons.filter((remain => remain.id !== indexToRemove))
+      setPersons(updated)
+    }
+  }
+
   return (
     <div>
       <Header name='Phonebook' />
-      <NewInput label='filter shown with' value={filter} setNewValue={setFilter}/>
+      <NewInput label='filter shown with' value={filter} setNewValue={setFilter} />
 
       <Header name='add a new' />
-      <NewPersonForm persons={persons} setPersons={setPersons} newName={newName} setNewName={setNewName} newNumber={newNumber} setNewNumber={setNewNumber}/>
+      <NewPersonForm persons={persons} setPersons={setPersons} newName={newName} setNewName={setNewName} newNumber={newNumber} setNewNumber={setNewNumber} />
 
       <Header name='Numbers' />
-      <People people={filterPeople()} />
+      {filterPeople().map((person) => <PhonebookItem key={person['name']} item={person} deleteItemHandler={deletePersonHandler} /> )}
     </div>
   )
 }

@@ -18,10 +18,8 @@ const NewPersonForm = ({persons, setPersons, newName, setNewName, newNumber, set
       'name': name ,
       'number': number
     }
-    console.log('new', newPerson)
     setPersons(persons.concat(newPerson))
     personService.create(newPerson)
-    console.log(persons)
   }
 
   return (
