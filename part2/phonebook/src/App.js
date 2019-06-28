@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import PhonebookItem from './components/PhonebookItem'
 import NewPersonForm from './components/NewPersonForm'
 import NewInput from './components/NewInput'
+import Notification from './components/Notification'
 import personService from './services/persons'
 
 const Header = ({name}) => {
@@ -15,6 +16,7 @@ const App = (props) => {
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber ] = useState('')
   const [ filter, setFilter ] = useState('')
+  const [ notiMsg, setNotiMsg ] = useState('Hello')
 
   useEffect(() => {
     personService
@@ -57,11 +59,14 @@ const App = (props) => {
       const existing = persons.find(person => person.name === name)
       const updatedId = existing['id']
       const updatedContent = {...existing, 'name': name, 'number': number}
+      console.log(updatedContent)
       personService
         .update(updatedId, updatedContent)
           .then(returnedPerson => {
+            console.log('returned', returnedPerson)
             setPersons(persons.map(person => person.id !== updatedId ? person : returnedPerson))
           })
+      console.log(persons)
     }
   }
 
@@ -70,13 +75,16 @@ const App = (props) => {
       'name': name ,
       'number': number
     }
-    setPersons(persons.concat(newPerson))
     personService.create(newPerson)
+    setPersons(persons.concat(newPerson))
+    setNotiMsg(`Added ${name}`)
+    setTimeout(() => {setNotiMsg(null)}, 2000)
   }
 
   return (
     <div>
       <Header name='Phonebook' />
+      <Notification message={notiMsg} />
       <NewInput label='filter shown with' value={filter} setNewValue={setFilter} />
 
       <Header name='add a new' />
