@@ -17,6 +17,7 @@ const App = (props) => {
   const [ newNumber, setNewNumber ] = useState('')
   const [ filter, setFilter ] = useState('')
   const [ notiMsg, setNotiMsg ] = useState('Hello')
+  const [ successful, setSuccess ] = useState(true)
 
   const filterPeople = () => {
     return ( 
@@ -25,6 +26,11 @@ const App = (props) => {
         .includes(filter.toString().toLowerCase())
       )
     )
+  }
+
+  const setNotification = (msg) => {
+    setNotiMsg(msg)
+    setTimeout(() => {setNotiMsg(null)}, 2000)
   }
 
   useEffect(() => {
@@ -37,13 +43,15 @@ const App = (props) => {
   }, [])
 
   const deletePersonHandler = (person) => {
-    let confirmed = window.confirm(`Delete ${person['name']}?`)
+    const nameToRemove = person['name']
+    const indexToRemove = person['id']
+    let confirmed = window.confirm(`Delete ${nameToRemove}?`)
     if (confirmed) {
-      const indexToRemove = person['id']
       personService
         .remove(indexToRemove)
           .then(() => {
             setPersons(persons.filter((remain => remain.id !== indexToRemove)))
+            setNotification(`${nameToRemove} deleted`)
           })
         .catch(error => { console.log('DELETE failed: ', error) })
     }
@@ -67,8 +75,13 @@ const App = (props) => {
         .update(updatedId, updatedContent)
           .then(returnedPerson => {
             setPersons(persons.map(person => person.id !== updatedId ? person : returnedPerson))
+            setNotification(`Number of ${name} has been changed`)
           })
-          .catch(error => { console.log('PUT update person failed: ', error) })
+          .catch(error => { 
+            console.log('PUT update person failed: ', error)
+            setNotification(`Information of ${name} has already been removed from server`)
+            setSuccess(false)
+          })
     }
   }
 
@@ -81,16 +94,15 @@ const App = (props) => {
       .create(newPerson)
         .then(returnedPersons => { 
           setPersons(persons.concat(returnedPersons))
+          setNotification(`Added ${name}`)
         })
       .catch(error => { console.log('POST new person failed: ', error) })
-    setNotiMsg(`Added ${name}`)
-    setTimeout(() => {setNotiMsg(null)}, 2000)
   }
 
   return (
     <div>
       <Header name='Phonebook' />
-      <Notification message={notiMsg} />
+      <Notification message={notiMsg} successful={successful} />
       <NewInput label='filter shown with' value={filter} setNewValue={setFilter} />
 
       <Header name='add a new' />
