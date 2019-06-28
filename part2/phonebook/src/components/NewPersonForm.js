@@ -1,27 +1,7 @@
 import React from 'react'
 import NewInput from './NewInput'
-import personService from '../services/persons'
 
-
-const NewPersonForm = ({persons, setPersons, newName, setNewName, newNumber, setNewNumber}) => {
-
-  const newPersonFormHandler = (event) => {
-    event.preventDefault()
-    let names = persons.map(person => person['name'])
-    names.includes(newName)
-      ? alert(`${newName} is already added to phonebook`)
-      : addNewPerson(newName , newNumber)
-  }
-
-  const addNewPerson = (name, number) => {
-    let newPerson = {
-      'name': name ,
-      'number': number
-    }
-    setPersons(persons.concat(newPerson))
-    personService.create(newPerson)
-  }
-
+const NewPersonForm = ({newName, setNewName, newNumber, setNewNumber, newPersonFormHandler}) => {
   return (
     <form onSubmit={newPersonFormHandler}>
       <NewInput label='name' newValue={newName} setNewValue={setNewName} />
@@ -32,4 +12,5 @@ const NewPersonForm = ({persons, setPersons, newName, setNewName, newNumber, set
     </form>
   )
 }
+
 export default NewPersonForm 

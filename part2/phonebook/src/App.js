@@ -43,13 +43,30 @@ const App = (props) => {
     }
   }
 
+  const newPersonFormHandler = (event) => {
+    event.preventDefault()
+    let names = persons.map(person => person['name'])
+    names.includes(newName)
+      ? alert(`${newName} is already added to phonebook`)
+      : addNewPerson(newName , newNumber)
+  }
+
+  const addNewPerson = (name, number) => {
+    let newPerson = {
+      'name': name ,
+      'number': number
+    }
+    setPersons(persons.concat(newPerson))
+    personService.create(newPerson)
+  }
+
   return (
     <div>
       <Header name='Phonebook' />
       <NewInput label='filter shown with' value={filter} setNewValue={setFilter} />
 
       <Header name='add a new' />
-      <NewPersonForm persons={persons} setPersons={setPersons} newName={newName} setNewName={setNewName} newNumber={newNumber} setNewNumber={setNewNumber} />
+      <NewPersonForm newName={newName} setNewName={setNewName} newNumber={newNumber} setNewNumber={setNewNumber} newPersonFormHandler={newPersonFormHandler} />
 
       <Header name='Numbers' />
       {filterPeople().map((person) => <PhonebookItem key={person['name']} item={person} deleteItemHandler={deletePersonHandler} /> )}
