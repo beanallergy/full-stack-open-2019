@@ -18,14 +18,6 @@ const App = (props) => {
   const [ filter, setFilter ] = useState('')
   const [ notiMsg, setNotiMsg ] = useState('Hello')
 
-  useEffect(() => {
-    personService
-      .getAll()
-        .then(initialPersons => {
-        setPersons(initialPersons)
-      })
-  }, [])
-
   const filterPeople = () => {
     return ( 
       persons.filter(person =>
@@ -35,13 +27,25 @@ const App = (props) => {
     )
   }
 
+  useEffect(() => {
+    personService
+      .getAll()
+        .then(initialPersons => {
+          setPersons(initialPersons)
+      })
+      .catch(error => { console.log('GET initial data failed: ', error) })
+  }, [])
+
   const deletePersonHandler = (person) => {
     let confirmed = window.confirm(`Delete ${person['name']}?`)
     if (confirmed) {
       const indexToRemove = person['id']
-      personService.remove(indexToRemove)
-      let updated = persons.filter((remain => remain.id !== indexToRemove))
-      setPersons(updated)
+      personService
+        .remove(indexToRemove)
+          .then(() => {
+            setPersons(persons.filter((remain => remain.id !== indexToRemove)))
+          })
+        .catch(error => { console.log('DELETE failed: ', error) })
     }
   }
 
@@ -59,14 +63,12 @@ const App = (props) => {
       const existing = persons.find(person => person.name === name)
       const updatedId = existing['id']
       const updatedContent = {...existing, 'name': name, 'number': number}
-      console.log(updatedContent)
       personService
         .update(updatedId, updatedContent)
           .then(returnedPerson => {
-            console.log('returned', returnedPerson)
             setPersons(persons.map(person => person.id !== updatedId ? person : returnedPerson))
           })
-      console.log(persons)
+          .catch(error => { console.log('PUT update person failed: ', error) })
     }
   }
 
@@ -75,8 +77,12 @@ const App = (props) => {
       'name': name ,
       'number': number
     }
-    personService.create(newPerson)
-    setPersons(persons.concat(newPerson))
+    personService
+      .create(newPerson)
+        .then(returnedPersons => { 
+          setPersons(persons.concat(returnedPersons))
+        })
+      .catch(error => { console.log('POST new person failed: ', error) })
     setNotiMsg(`Added ${name}`)
     setTimeout(() => {setNotiMsg(null)}, 2000)
   }
