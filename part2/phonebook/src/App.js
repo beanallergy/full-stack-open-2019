@@ -47,12 +47,26 @@ const App = (props) => {
     event.preventDefault()
     let names = persons.map(person => person['name'])
     names.includes(newName)
-      ? alert(`${newName} is already added to phonebook`)
+      ? updateExistingPerson(newName , newNumber)
       : addNewPerson(newName , newNumber)
   }
 
+  const updateExistingPerson = (name, number) => {
+    let confirmed = window.confirm(`${name} is already added to phonebook, replace the old number with a new one?`)
+    if (confirmed) {
+      const existing = persons.find(person => person.name === name)
+      const updatedId = existing['id']
+      const updatedContent = {...existing, 'name': name, 'number': number}
+      personService
+        .update(updatedId, updatedContent)
+          .then(returnedPerson => {
+            setPersons(persons.map(person => person.id !== updatedId ? person : returnedPerson))
+          })
+    }
+  }
+
   const addNewPerson = (name, number) => {
-    let newPerson = {
+    const newPerson = {
       'name': name ,
       'number': number
     }
