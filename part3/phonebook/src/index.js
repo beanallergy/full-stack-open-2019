@@ -53,13 +53,21 @@ const generateID = () => {
   return Math.floor(Math.random() * (1000 - 5)) + 5;
 }
 
-app.post('/api/persons', (request, response) => {
-  const body = request.body
-  if (!body) {
+const postErrorHandler = (body, response) => {
+  if (!body.name || !body.number) {
     return response.status(400).json({
-      error: 'content missing'
+      error: 'The name or number is missing'
+    })
+  } else if (persons.find(person => person.name === body.name)) {
+    return response.status(400).json({
+      error: 'name must be unique'
     })
   }
+}
+
+app.post('/api/persons', (request, response) => {
+  const body = request.body
+  postErrorHandler(body, response)
   const newPerson = {
     name: body.name,
     number: body.number,
