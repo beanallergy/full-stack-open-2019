@@ -43,6 +43,32 @@ app.get('/api/persons/:id', (request, response) => {
   else response.status(404).end()
 })
 
+app.delete('/api/persons/:id', (request, response) => {
+  const id = Number(request.params.id)
+  person = persons.filter(p => p.id !== id)
+  response.status(204).end()
+})
+
+const generateID = () => {
+  return Math.floor(Math.random() * (1000 - 5)) + 5;
+}
+
+app.post('/api/persons', (request, response) => {
+  const body = request.body
+  if (!body) {
+    return response.status(400).json({
+      error: 'content missing'
+    })
+  }
+  const newPerson = {
+    name: body.name,
+    number: body.number,
+    id: generateID(),
+  }
+  persons = persons.concat(newPerson)
+  response.json(newPerson)
+})
+
 const PORT = 3001
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
