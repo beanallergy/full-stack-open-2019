@@ -1,4 +1,5 @@
 const express = require('express')
+const morgan = require('morgan')
 const app = express()
 const bodyParser = require('body-parser')
 
@@ -26,6 +27,7 @@ let persons = [
 ]
 
 app.use(bodyParser.json())
+app.use(morgan('tiny'))
 
 app.get('/info', (request, response) => {
   const info_string = `Phonebook has info for ${persons.length} people`
@@ -66,11 +68,10 @@ const postErrorHandler = (body, response) => {
 }
 
 app.post('/api/persons', (request, response) => {
-  const body = request.body
-  postErrorHandler(body, response)
+  postErrorHandler(request.body, response)
   const newPerson = {
-    name: body.name,
-    number: body.number,
+    name: request.body.name,
+    number: request.body.number,
     id: generateID(),
   }
   persons = persons.concat(newPerson)
