@@ -27,7 +27,11 @@ let persons = [
 ]
 
 app.use(bodyParser.json())
-app.use(morgan('tiny'))
+
+morgan.token('post-object', (res) => {
+  return JSON.stringify(res.body)
+})
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :post-object'))
 
 app.get('/info', (request, response) => {
   const info_string = `Phonebook has info for ${persons.length} people`
