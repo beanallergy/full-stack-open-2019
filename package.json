@@ -1,5 +1,5 @@
 {
-  "name": "phonebook",
+  "name": "phonebook-backend-part3",
   "version": "1.0.0",
   "description": "Phonebook for course Full Stack (part 3)",
   "main": "index.js",
