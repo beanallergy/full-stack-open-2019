@@ -28,8 +28,9 @@ const App = (props) => {
     )
   }
 
-  const setNotification = (msg) => {
+  const setNotification = (msg, success) => {
     setNotiMsg(msg)
+    setSuccess(success)
     setTimeout(() => {setNotiMsg(null)}, 2000)
   }
 
@@ -39,7 +40,10 @@ const App = (props) => {
         .then(initialPersons => {
           setPersons(initialPersons)
       })
-      .catch(error => { console.log('GET initial data failed: ', error) })
+      .catch(error => {
+        console.log('GET initial data failed: ', error)
+        setNotification(error.response.data.error, false)
+      })
   }, [])
 
   const deletePersonHandler = (person) => {
@@ -49,11 +53,14 @@ const App = (props) => {
     if (confirmed) {
       personService
         .remove(indexToRemove)
-          .then(() => {
-            setPersons(persons.filter((remain => remain.id !== indexToRemove)))
-            setNotification(`${nameToRemove} deleted`)
-          })
-        .catch(error => { console.log('DELETE failed: ', error) })
+        .then(() => {
+          setPersons(persons.filter((remain => remain.id !== indexToRemove)))
+          setNotification(`${nameToRemove} deleted`, true)
+        })
+        .catch(error => {
+          console.log('DELETE failed: ', error)
+          setNotification(error.response.data.error, false)
+        })
     }
   }
 
@@ -73,15 +80,14 @@ const App = (props) => {
       const updatedContent = {...existing, 'name': name, 'number': number}
       personService
         .update(updatedId, updatedContent)
-          .then(returnedPerson => {
-            setPersons(persons.map(person => person.id !== updatedId ? person : returnedPerson))
-            setNotification(`Number of ${name} has been changed`)
-          })
-          .catch(error => { 
-            console.log('PUT update person failed: ', error)
-            setNotification(`Information of ${name} has already been removed from server`)
-            setSuccess(false)
-          })
+        .then(returnedPerson => {
+          setPersons(persons.map(person => person.id !== updatedId ? person : returnedPerson))
+          setNotification(`Number of ${name} has been changed`, true)
+        })
+        .catch(error => {
+          console.log('PUT update person failed: ', error)
+          setNotification(error.response.data.error, false)
+        })
     }
   }
 
@@ -92,11 +98,14 @@ const App = (props) => {
     }
     personService
       .create(newPerson)
-        .then(returnedPersons => { 
-          setPersons(persons.concat(returnedPersons))
-          setNotification(`Added ${name}`)
-        })
-      .catch(error => { console.log('POST new person failed: ', error) })
+      .then(returnedPersons => {
+        setPersons(persons.concat(returnedPersons))
+        setNotification(`Added ${name}`, true)
+      })
+      .catch(error => {
+        console.log('POST new person failed: ', error)
+        setNotification(error.response.data.error, false)
+      })
   }
 
   return (
