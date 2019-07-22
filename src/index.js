@@ -17,7 +17,7 @@ app.use(morgan(':method :url :status :res[content-length] - :response-time ms :p
 
 app.get('/info', (request, response, next) => {
   Person.find({})
-    .then(result => { 
+    .then(result => {
       const info_string = `Phonebook has info for ${result.length} people`
       response.send(`<p> ${info_string} </p> <p> ${Date()} </p>`)
     })
@@ -41,7 +41,7 @@ app.get('/api/persons/:id', (request, response, next) => {
 
 app.delete('/api/persons/:id', (request, response, next) => {
   Person.findByIdAndRemove(request.params.id)
-    .then(result => response.status(204).end())
+    .then(() => response.status(204).end())
     .catch(error => next(error))
 })
 
@@ -49,7 +49,7 @@ app.post('/api/persons', (request, response, next) => {
   const body = request.body
   if (!body) {
     return response.status(400).send({ error: 'The content is missing' })
-  } 
+  }
   const newPerson = new Person({
     name: body.name,
     number: body.number
