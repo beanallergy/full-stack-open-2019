@@ -17,6 +17,7 @@ const App = (props) => {
   const [ newNumber, setNewNumber ] = useState('')
   const [ filter, setFilter ] = useState('')
   const [ notiMsg, setNotiMsg ] = useState('Hello')
+  const defaultErrorMsg = 'Something went wrong...'
   const [ successful, setSuccess ] = useState(true)
 
   const filterPeople = () => {
@@ -42,7 +43,7 @@ const App = (props) => {
       })
       .catch(error => {
         console.log('GET initial data failed: ', error)
-        setNotification(error.response.data.error, false)
+        setNotification(error.message ?? defaultErrorMsg, false)
       })
   }, [])
 
@@ -59,7 +60,7 @@ const App = (props) => {
         })
         .catch(error => {
           console.log('DELETE failed: ', error)
-          setNotification(error.response.data.error, false)
+          setNotification(error.message ?? defaultErrorMsg, false)
         })
     }
   }
@@ -86,7 +87,7 @@ const App = (props) => {
         })
         .catch(error => {
           console.log('PUT update person failed: ', error)
-          setNotification(error.response.data.error, false)
+          setNotification(error.message ?? defaultErrorMsg, false)
         })
     }
   }
@@ -104,7 +105,7 @@ const App = (props) => {
       })
       .catch(error => {
         console.log('POST new person failed: ', error)
-        setNotification(error.response.data.error, false)
+        setNotification(error.message ?? defaultErrorMsg, false)
       })
   }
 
