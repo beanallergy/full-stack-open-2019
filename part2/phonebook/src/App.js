@@ -87,7 +87,7 @@ const App = (props) => {
         })
         .catch(error => {
           console.log('PUT update person failed: ', error)
-          setNotification(error.message ?? defaultErrorMsg, false)
+          setNotification(`Information of ${name} has already been removed from server`, false)
         })
     }
   }
