@@ -2,7 +2,7 @@ import React from 'react'
 
 const Header = ({name}) => {
   return (
-    <h1>{name}</h1>
+    <h2>{name}</h2>
   )
 }
 
@@ -23,7 +23,7 @@ const Part = ({part}) => {
 const Total = ({exercises}) => {
   const reducer = (accumulator, currentValue) => accumulator + currentValue
   return (
-    <p>Number of exercises {exercises.reduce(reducer)}</p>
+    <b>total of {exercises.reduce(reducer)} exercises</b>
   )
 }
 
