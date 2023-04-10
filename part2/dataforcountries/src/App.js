@@ -1,31 +1,37 @@
 import React, { useState, useEffect } from 'react'
 import NewInput from './components/NewInput'
 import Countries from './components/Countries'
-import axios from 'axios';
+import axios from 'axios'
 
 const App = (props) => {
   const [ countries, setCountries] = useState([])
-  const [ filter, setFilter ] = useState('')
+  const [ nameFilter, setNameFilter ] = useState('')
 
   useEffect (() => {
     axios
-      .get('https://restcountries.eu/rest/v2/all')
-      .then(response => {
-        setCountries(response.data)})
+      .get('https://restcountries.com/v3.1/all')
+        .then(response => {setCountries(response.data)})
+      .catch(error => {console.log('GET initial data failed: ', error)
+      })
   }, [])
-  
+
+  // do not render anything if countries is still null
+  if (!countries) { 
+    return null
+  }
+
   const filterCountries = () => {
-    let filtered = countries.filter(country => 
-        country['name'].toString().toLowerCase()
-        .includes(filter.toString().toLowerCase())
+    // TODO: https://restcountries.com/v3.1/name/{nameFilter}
+    let filtered = countries.filter((country) =>
+      country['name']['common']?.toString().toLowerCase().includes(nameFilter.toString().toLowerCase())
     )
     return filtered
   }
   
   return (
     <div>
-      <NewInput label='find countries' value={filter} setNewValue={setFilter}/>
-      <Countries countries={filterCountries()} setFilter={setFilter}/>
+      <NewInput label='find countries' value={nameFilter} setNewValue={setNameFilter}/>
+      <Countries countries={filterCountries()} setFilter={setNameFilter}/>
     </div>
   )
 }
