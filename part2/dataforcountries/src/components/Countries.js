@@ -2,6 +2,7 @@ import React from 'react'
 import Country from './Country'
 
 const Countries = ({countries, setFilter}) => {
+  console.log('result', countries)
   if (countries.length === 1) {
       return <Country country={countries[0]} />
   }
@@ -12,18 +13,18 @@ const Countries = ({countries, setFilter}) => {
   }
   else if (1 < countries.length < 10) {
     return (
-      countries.map((country) => <CountryInList key={country['name']} country={country} setFilter={setFilter} /> )
+      countries.map((country) => <CountryInList key={country['name']['common']} country={country} setFilter={setFilter} /> )
     )
   }
 }
 
 const CountryInList = ({country, setFilter}) => {
   function showCountryDetails () {
-    console.log(country['name'], 'clicked')
-    setFilter(country['name'])
+    console.log(country['name']['common'], 'clicked')
+    setFilter(country['name']['common'])
   }
   return (
-    <p>{country['name']} <button onClick={showCountryDetails}>show</button> </p>
+    <p>{country['name']['common']} <button onClick={showCountryDetails}>show</button> </p>
   )
 }
 
