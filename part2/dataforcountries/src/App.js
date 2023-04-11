@@ -5,14 +5,14 @@ import Countries from './components/Countries'
 import apiService from './services/api'
 
 const App = (props) => {
-  const [ countries, setCountries] = useState([])
-  const [ nameFilter, setNameFilter ] = useState('')
+  const [countries, setCountries] = useState([])
+  const [nameFilter, setNameFilter] = useState('')
 
   useEffect(() => {
     apiService
       .getAll()
-        .then(countriesdata => {
-          setCountries(countriesdata)
+      .then(countriesdata => {
+        setCountries(countriesdata)
       })
       .catch(error => {
         console.log('GET initial data failed: ', error)
@@ -20,32 +20,23 @@ const App = (props) => {
   }, [])
 
   //do not render anything if countries is still null
-  if (!countries) { 
+  if (!countries) {
     return null
   }
 
-  console.log('all', countries)
-
-  
   const filterCountries = () => {
-    // TODO: https://restcountries.com/v3.1/name/{nameFilter}
-    //let filtered=countries.filter(c => c['name'] && c['name']['common'] && c['name']['common'].includes(nameFilter.toLowerCase()))
-    // let filtered = countries.map(item => ({
-    //   ...item,
-    //   name: item['name'].filter(
-    //     child => child['common']?.toString().toLowerCase()
-    //     .includes(nameFilter.toString().toLowerCase())
-    //   )
-    // }).filter(item => item['name']))
-    var filtered = countries.slice(201,210)
-    //var filtered = countries.slice(201,202)
+    console.log(nameFilter)
+    let filtered = countries.filter(country => {
+      return country['name']['common'] 
+        && country['name']['common'].toLowerCase().includes(nameFilter.toLowerCase())
+    })
     return filtered
   }
-  
+
   return (
     <div>
-      <NewInput label='find countries' value={nameFilter} setNewValue={setNameFilter}/>
-      <Countries countries={filterCountries()} setFilter={setNameFilter}/>
+      <NewInput label='find countries' value={nameFilter} setNewValue={setNameFilter} />
+      <Countries countries={filterCountries()} setFilter={setNameFilter} />
     </div>
   )
 }
