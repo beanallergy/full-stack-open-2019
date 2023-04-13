@@ -2,12 +2,13 @@ require('dotenv').config()
 const express = require('express')
 const morgan = require('morgan')
 const app = express()
-const bodyParser = require('body-parser')
+//const bodyParser = require('body-parser')
 const cors = require('cors')
 const Person = require('./models/person')
 
-app.use(bodyParser.json())
+app.use(express.json())
 app.use(cors())
+// frontend static content
 app.use(express.static('build'))
 
 morgan.token('post-object', (res) => {
@@ -26,14 +27,14 @@ app.get('/info', (request, response, next) => {
 
 app.get('/api/persons', (request, response, next) => {
   Person.find({})
-    .then(result => response.json(result.map(person => person.toJSON())))
+    .then(result => response.json(result))
     .catch(error => next(error))
 })
 
 app.get('/api/persons/:id', (request, response, next) => {
   Person.findById(request.params.id)
     .then(result => {
-      if (result) response.json(result.toJSON())
+      if (result) response.json(result)
       else response.status(404).end()
     })
     .catch(error => next(error))
@@ -55,7 +56,7 @@ app.post('/api/persons', (request, response, next) => {
     number: body.number
   })
   newPerson.save()
-    .then(result => response.json(result.toJSON()))
+    .then(result => response.json(result))
     .catch(error => next(error))
 })
 
@@ -66,7 +67,7 @@ app.put('/api/persons/:id', (request, response, next) => {
     number: body.number
   }
   Person.findByIdAndUpdate(request.params.id, updatedPerson, { new: true })
-    .then(result => response.json(result.toJSON()))
+    .then(result => response.json(result))
     .catch(error => next(error))
 })
 
