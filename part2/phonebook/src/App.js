@@ -45,7 +45,7 @@ const App = (props) => {
         console.log('GET initial data failed: ', error)
         setNotification(error.message ?? defaultErrorMsg, false)
       })
-  }, [persons])
+  }, [])
 
   const deletePersonHandler = (person) => {
     const nameToRemove = person['name']
