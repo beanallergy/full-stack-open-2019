@@ -32,7 +32,7 @@ const App = (props) => {
   const setNotification = (msg, success) => {
     setNotiMsg(msg)
     setSuccess(success)
-    setTimeout(() => {setNotiMsg(null)}, 2000)
+    setTimeout(() => {setNotiMsg(null)}, 5000)
   }
 
   useEffect(() => {
@@ -43,7 +43,7 @@ const App = (props) => {
       })
       .catch(error => {
         console.log('GET initial data failed: ', error)
-        setNotification(error.message ?? defaultErrorMsg, false)
+        setNotification(error.response.data.error ?? defaultErrorMsg, false)
       })
   }, [])
 
@@ -60,7 +60,7 @@ const App = (props) => {
         })
         .catch(error => {
           console.log('DELETE failed: ', error)
-          setNotification(error.message ?? defaultErrorMsg, false)
+          setNotification(error.response.data.error ?? defaultErrorMsg, false)
         })
     }
   }
@@ -87,7 +87,7 @@ const App = (props) => {
         })
         .catch(error => {
           console.log('PUT update person failed: ', error)
-          setNotification(`Information of ${name} has already been removed from server`, false)
+          setNotification(error.response.data.error ?? `Information of ${name} has already been removed from server`)
         })
     }
   }
@@ -105,7 +105,7 @@ const App = (props) => {
       })
       .catch(error => {
         console.log('POST new person failed: ', error)
-        setNotification(error.message ?? defaultErrorMsg, false)
+        setNotification(error.response.data.error ?? defaultErrorMsg, false)
       })
   }
 

@@ -14,6 +14,7 @@ app.use(express.static('build'))
 morgan.token('post-object', (res) => {
   return JSON.stringify(res.body)
 })
+// Morgan tiny format
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :post-object'))
 
 app.get('/info', (request, response, next) => {
@@ -31,6 +32,7 @@ app.get('/api/persons', (request, response, next) => {
     .catch(error => next(error))
 })
 
+// GET
 app.get('/api/persons/:id', (request, response, next) => {
   Person.findById(request.params.id)
     .then(result => {
@@ -40,12 +42,14 @@ app.get('/api/persons/:id', (request, response, next) => {
     .catch(error => next(error))
 })
 
+// DELETE
 app.delete('/api/persons/:id', (request, response, next) => {
   Person.findByIdAndRemove(request.params.id)
     .then(() => response.status(204).end())
     .catch(error => next(error))
 })
 
+// POST
 app.post('/api/persons', (request, response, next) => {
   const body = request.body
   if (!body) {
@@ -60,14 +64,23 @@ app.post('/api/persons', (request, response, next) => {
     .catch(error => next(error))
 })
 
+// PUT
 app.put('/api/persons/:id', (request, response, next) => {
   const body = request.body
   const updatedPerson = {
     name: body.name,
     number: body.number
   }
-  Person.findByIdAndUpdate(request.params.id, updatedPerson, { new: true })
-    .then(result => response.json(result))
+  const updateOptions = {
+    new: true,
+    runValidators: true
+  }
+  const nullErrorMsg = 'Object to be updated does not exist.'
+  Person.findByIdAndUpdate(request.params.id, updatedPerson, updateOptions)
+    .then(result => {
+      console.log('PUT promise fulfilled - result:', result)
+      result ? response.json(result) : response.status(400).json({ error: nullErrorMsg })
+    })
     .catch(error => next(error))
 })
 
